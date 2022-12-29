@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
-	author: "nobody",
+	name: "TToF Season 2",
+	id: "TTof_Potato_Edition",
+	author: "Ajchen and 3^3=7",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -13,12 +13,12 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.0.1 potato",
+	name: "Literally only one potato",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
+	<h3>v0.0.1</h3><br>
 		- Added things.<br>
 		- Added stuff.`
 
@@ -76,4 +76,5 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+  
 }
