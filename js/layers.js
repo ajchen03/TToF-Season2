@@ -90,14 +90,14 @@ addLayer("p",{
   clickables:{
     11:{
       display(){return "Mode: "+this.text()},
-      onClick(){player.p.farmMode=(player.p.farmMode+1)%4},
+      onClick(){player.p.farmMode=(player.p.farmMode+1)%2},
       canClick:true,
       text(){
         switch(player.p.farmMode){
           case 0:return "Plant";break;
-          case 1:return "Destroy";break;
-          case 2:return "Watch";break;
-            case 3:return "Time";break;
+          case 1:return "View+Destroy";break;
+          //case 2:return "Watch";break;
+          //case 3:return "Time";break;
         }
       }
     }
@@ -129,8 +129,8 @@ addLayer("p",{
     },
     getDisplay(data, id) {
         if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
-        else if(player.p.farmMode==3)return format(player.p.grid[id].time)+"s"
-        return numToFarm(data.plant)
+        return numToFarm(data.plant)+'\n'+format(player.p.grid[id].time)+"s"
+        //return numToFarm(data.plant)
     },
 },
     tabFormat:{
@@ -158,10 +158,12 @@ addLayer("p",{
     },
 update(diff){
     for (item in player.p.grid){
-if(player.p.grid[item].time!=0){
+
   player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
-if(player.p.grid[item].plant==1&&player.p.grid[item].time<0){player.p.grid[item].time=30;player.p.grid[item].plant=2}
-}
+
+ if(player.p.grid[item].plant==1&&player.p.grid[item].time==0){player.p.grid[item].time=30;player.p.grid[item].plant=2}
+  
+
 } 
 }
 })
@@ -185,7 +187,7 @@ addLayer("ex",{
     "upgrades",
   ],
     shouldNotify(){
-      return false
+      return layers.ex.buyables[11].canAfford()
     },
   buyables:{
     11:{
@@ -215,7 +217,9 @@ addLayer("ex",{
 function numToFarm(x){
   switch(x){
     case 0:return "Empty";break;
-    case 1:return "Small Potato";break;
+    case 1:return "Baby Potato";break;
+    case 2:return "Teen Potato";break;
+    case 3:return "Normal Potato";break; 
   }
 }
 function extend(){
