@@ -16,7 +16,10 @@ addLayer("p",{
         unlocked: true,
 		points: n(0),
     }},
-    color: "#4BDC13",
+    color() {
+      if (hasUpgrade('p',11)) return "#ffdb83";
+      return "#4BDC13";
+    },
     requires: n(10), 
     resource: "potatos", 
     baseResource: "points",
@@ -52,7 +55,7 @@ addLayer("p",{
          title:"Farm",
          description:"Unlock Farm.",
          cost:n(3),
-        unlocked(){return hasUpgrade('p',11)}
+        unlocked(){return false /**/}
       },
     },
   clickables:{
@@ -73,10 +76,10 @@ addLayer("p",{
         return true
     },
     onClick(data, id) { 
-        player[this.layer].grid[id]++
+       
     },
     getDisplay(data, id) {
-        return data 
+        return numToFarm(data)
     },
 },
     tabFormat:{
@@ -119,10 +122,34 @@ addLayer("ex",{
     ],*/
     layerShown(){return true},
   tabformat:[
-    //"main-display",
-    //"resource-display",
-    "blank",
-    //"upgrades",
-  ]
+    "upgrades",
+  ],
+  buyables:{
+    11:{
+      display(){return "Unlock New Stuff." },
+      canAfford(){
+       switch(extend()){
+         case 1:return player.p.upgrades.length>=1;break;
+       }  
+      },
+      buy(){
+        addBuyables("ex", 11, n(1))
+      },
+      reqText(){
+        switch(extend()){
+           case 1:return "Ge";break; 
+        }
+      }
+    }
+  }
 })
 
+function numToFarm(x){
+  switch(x){
+    case 0:return "Empty";break;
+    case 1:return "Normal Potato";break;
+  }
+}
+function extend(){
+  return getBuyableAmount("ex", 11)
+}
