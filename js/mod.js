@@ -7,7 +7,7 @@ let modInfo = {
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal(0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -37,15 +37,6 @@ function canGenPoints(){
 	return true
 }
 
-// Calculate points/sec!
-function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
-	let gain = new Decimal(1)
-	return gain
-}
-
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 }}
@@ -59,7 +50,7 @@ function isEndgame() {
 	return player.points.gte(new Decimal("e280000000"))
 }
 
-
+//getPointGen()我挪到layer.js上面了
 
 // Less important things beyond this point!
 

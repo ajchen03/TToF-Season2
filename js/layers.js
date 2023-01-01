@@ -1,44 +1,92 @@
+// Calculate points/sec!
+function getPointGen() {
+	if(!canGenPoints())
+		return n(0)
+
+	let gain = new Decimal(1)
+  if(hasUpgrade('p',11))gain=gain.times(upgradeEffect('p',11))
+	return gain
+}
+
+
 addLayer("p",{
-    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    symbol: "P",
+    position: 0, 
     startData() { return {
         unlocked: true,
 		points: n(0),
     }},
     color: "#4BDC13",
-    requires: n(10), // Can be a function that takes requirement increases into account
-    resource: "potatos", // Name of prestige currency
-    baseResource: "points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
-    gainMult() { // Calculate the multiplier for main currency from bonuses
+    requires: n(10), 
+    resource: "potatos", 
+    baseResource: "points",
+    baseAmount(){return player.points},
+    type: "normal", 
+    exponent: 0.5, 
+    gainMult() {
     //now we can use n(x) as new Decimal(x)
     //see someUsefulFunctions.js for more
         let mult = n(1)
         return mult
     },
-    gainExp() { // Calculate the exponent on main currency from bonuses
+    gainExp() { 
         let mult = n(1)
         return mult
     },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    row: 0,
     hotkeys: [
-        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "p", description: "P: Reset for potatoes", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
     upgrades:{
       11:{
-         title:"",
-         description:"",
+         title:"Basic Upgrade",
+         description:"Potatoes boost Points gain.",
          cost:n(1),
          effect(){
-           return n(1)
+           return player.p.points.add(3).log(2)
          },
-       }//打起来打起来
-      //what should the upgrade do
+        effectDisplay(){return format(upgradeEffect('p',11))+"x"}
+      },
+      12:{
+         title:"Farm",
+         description:"Unlock Farm.",
+         cost:n(3),//那可能真得写subTab
+        //问题是我不会写（绝望
+        //clickables
+        //我草 你别spam clickables 我求你了
+        //grid?
+        //你会写grid吗
+        unlocked(){return hasUpgrade('p',11)}
+      },
     },
-   /* tabformat:{//你等会 为啥整subtab啊
+  clickables:{
+    11:{
+      display:"Blank"
+    }
+  },
+  grid: {
+    rows: 2, 
+    cols: 2,
+    getStartData(id) {
+        return 0
+    },
+    getUnlocked(id) { // Default
+        return true
+    },
+    getCanClick(data, id) {
+        return true
+    },
+    onClick(data, id) { 
+        player[this.layer].grid[id]++
+    },
+    getDisplay(data, id) {
+        return data 
+    },
+
+    etc
+},
+    tabformat:{
       "Main":{
         content:[
           "main-display",
@@ -47,14 +95,41 @@ addLayer("p",{
           "blank",
           "upgrades"
         ]
-      }
-    }*/
+      },
+      "Farm":{
+        unlocked(){return hasUpgrade('p',12)},
+        content:[
+          "main-display",
+          //"prestige-button",
+          "resource-display",
+          "blank",
+          "clickables"
+        ]
+      },
+    }
   
+})
+addLayer("ex",{
+    symbol: "Ex", 
+    position: 0,
+    startData() { return {
+        unlocked: true,
+		    points: n(0),
+    }},
+    color: "#694dff",
+    requires: n(0), 
+    resource: "Extension",
+    type: "none", 
+    row: 'side',
+    /*hotkeys: [
+        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],*/
+    layerShown(){return true},
   tabformat:[
-    "main-display",
-    "prestige-button",
-    "resource-display",
+    //"main-display",
+    //"resource-display",
     "blank",
-    "upgrades",
+    //"upgrades",
   ]
 })
+
