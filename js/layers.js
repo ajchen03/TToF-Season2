@@ -36,9 +36,8 @@ addLayer("p",{
     exponent: 0.5, 
     gainMult(){
       let mult = n(1) 
-      mult=mult.times(n(1.1).pow(tmp.p.plantAmt2(2)))
-      console.log(format(mult))
-      //tmp.p.plantAmt2 is not a function
+      mult=mult.times(n(1.1).pow(tmp.p.plantAmt2))
+      alert(tmp.p.plantAmt2)
       return mult
     },
     gainExp() { 
