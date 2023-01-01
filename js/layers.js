@@ -36,8 +36,8 @@ addLayer("p",{
     exponent: 0.5, 
     gainMult(){
       let mult = n(1) 
-      
-     if(tmp.p.plantAmt2>=1) mult=mult.times(n(1.1).pow(tmp.p.plantAmt2))
+      alert(tmp.p.plantAmt2)
+      mult=mult.times(n(1.1).pow(tmp.p.plantAmt2))
     
       return mult
     },
@@ -188,7 +188,7 @@ update(diff){
 if(player.p.grid[item].plant==2)a++
   } 
     
-  return a
+  return n(0)
 }
   
 })
