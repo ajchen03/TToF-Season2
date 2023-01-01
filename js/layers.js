@@ -35,10 +35,10 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-      let mult = n(100)
-      mult=mult.times(n(1.1).pow(plantAmt2(2)))
-      
-      return mult
+      let mult = n(1000)
+     mult=mult.times(n(1.1).pow(plantAmt2(2)))
+      //魔法吧
+       return mult;
     },
     gainExp() { 
         let mult = n(1)
@@ -93,7 +93,7 @@ addLayer("p",{
          description:'Fasten potato growth.',
           cost:n(30),
         unlocked(){return extend()>=1}
-      },
+      }
     },
   clickables:{
     11:{
