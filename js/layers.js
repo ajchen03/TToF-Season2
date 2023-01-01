@@ -17,7 +17,7 @@ addLayer("p",{
     startData() { return {
         unlocked: true,
 		points: n(0),
-      farmMode:0
+      farmMode:2,
     }},
     color() {
       if (hasUpgrade('p',14)) return "#ffdb83";
@@ -90,12 +90,13 @@ addLayer("p",{
   clickables:{
     11:{
       display(){return "Mode: "+this.text()},
-      onClick(){player.p.farmMode=(player.p.farmMode+1)%2},
+      onClick(){player.p.farmMode=(player.p.farmMode+1)%3},
       canClick:true,
       text(){
         switch(player.p.farmMode){
           case 0:return "Plant";break;
           case 1:return "Destroy";break;
+          case 2:return "Watch";break;
         }
       }
     }
@@ -110,14 +111,17 @@ addLayer("p",{
         return true
     },
     getCanClick(data, id) {
-        if(player.p.farmMode==0)return data==0
+        if(player.p.farmMode==0)return data==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
+      else if(player.p.farmMode==2)return false
       else return data!=0
     },
     onClick(data, id) { 
        if(player.p.farmMode==1) setGridData("p", id, 0)
+      else setGridData("p", id, 1)
     },
     getDisplay(data, id) {
-        if(player.p.farmMode==0)return "Req 5 potatoes."
+        if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
+
         return numToFarm(data)
     },
 },
@@ -143,8 +147,8 @@ addLayer("p",{
           "clickables",
         ]
       },
-    }
-  
+    },
+
 })
 addLayer("ex",{
     symbol: "Ex", 
@@ -193,9 +197,16 @@ addLayer("ex",{
 function numToFarm(x){
   switch(x){
     case 0:return "Empty";break;
-    case 1:return "Normal Potato";break;
+    case 1:return "Small Potato";break;
   }
 }
 function extend(){
   return getBuyableAmount("ex", 11).toNumber()
+}
+function plantAmt(){
+  let a=0
+  for (item in player.p.grid){
+if(player.p.grid[item]!=0)a++
+} 
+  return a
 }
