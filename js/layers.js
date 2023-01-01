@@ -35,10 +35,11 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-      let mult = n(1000)
-     mult=mult.times(n(1.1).pow(plantAmt2(2)))
-      //魔法吧
-       return mult;
+      let mult = n(1) 
+      mult=mult.times(n(1.1).pow(tmp.p.plantAmt2(2)))
+      console.log(format(mult))
+      //tmp.p.plantAmt2 is not a function
+      return mult
     },
     gainExp() { 
         let mult = n(1)
@@ -180,7 +181,16 @@ update(diff){
     else player.p.grid[item].plant=3}
 
 } 
+},
+  plantAmt2(){
+  let a=0
+  for (item in player.p.grid){
+if(player.p.grid[item].plant==2)a++
+  } 
+    
+  return a
 }
+  
 })
 addLayer("ex",{
     symbol: "Ex", 
@@ -226,7 +236,8 @@ addLayer("ex",{
         "font-size":"13px"
       }}
     }
-  }
+  },
+  
 })
 
 function numToFarm(x){
