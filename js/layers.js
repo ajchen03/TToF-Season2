@@ -117,6 +117,7 @@ addLayer("p",{
        if(player.p.farmMode==1) setGridData("p", id, 0)
     },
     getDisplay(data, id) {
+        if(player.p.farmMode==0)return "Req 5 potatoes."
         return numToFarm(data)
     },
 },
