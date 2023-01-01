@@ -17,6 +17,7 @@ addLayer("p",{
     startData() { return {
         unlocked: true,
 		points: n(0),
+      farmMode:0
     }},
     color() {
       if (hasUpgrade('p',14)) return "#ffdb83";
@@ -70,7 +71,7 @@ addLayer("p",{
       },
       13:{
          title:"Basic Upgrade 3",
-         description(){return `Boost Points gain based on ${layers.p.resource()} Upgrades.`},
+         description(){return `Boost Points gain based on total ${layers.p.resource()} Upgrades.`},
           effect(){
            return n(1.3**player.p.upgrades.length)
          },
@@ -80,14 +81,23 @@ addLayer("p",{
       },
       14:{
          title:"Wait, the themes was about potatos!",
-         description:`okey lemme fix that`,
+         description(){if (hasUpgrade('p',14)) return 'fixed :)'
+           return `okey lemme fix that`},
           cost:n(15),
         unlocked(){return hasUpgrade('p',13)}
       },
     },
   clickables:{
     11:{
-      display:"Blank"
+      display(){return "Mode: "+this.text()},
+      onClick(){player.p.farmMode=(player.p.farmMode+1)%2},
+      canClick:true,
+      text(){
+        switch(player.p.farmMode){
+          case 0:return "Plant";break;
+          case 1:return "Destroy";break;
+        }
+      }
     }
   },
   grid: {
@@ -100,10 +110,11 @@ addLayer("p",{
         return true
     },
     getCanClick(data, id) {
-        return true
+        if(player.p.farmMode==0)return data==0
+      else return data!=0
     },
     onClick(data, id) { 
-       
+       if(player.p.farmMode==1) setGridData("p", id, 0)
     },
     getDisplay(data, id) {
         return numToFarm(data)
@@ -120,13 +131,15 @@ addLayer("p",{
         ]
       },
       "Farm":{
-        unlocked(){return extend()>1},
+        unlocked(){return extend()>=1},
         content:[
           "main-display",
           "prestige-button",
           "resource-display",
           "blank",
           "grid",
+          "blank",
+          "clickables",
         ]
       },
     }
@@ -153,11 +166,11 @@ addLayer("ex",{
   ],
   buyables:{
     11:{
-      display(){return "Unlock New Stuff." },
+      display(){return "Unlock New Stuff.<br><br>Req: "+this.reqText() },
       canAfford(){
        switch(extend()){
-         case 1:return player.p.upgrades.length>=4;break;
-           case 2:return false;break;
+         case 0:return player.p.upgrades.length>=4;break;
+           case 1:return false;break;
        }  
       },
       buy(){
@@ -165,10 +178,13 @@ addLayer("ex",{
       },
       reqText(){
         switch(extend()){
-           case 1:return "Get Four Upgrades.";break; 
-            case 2:return "???";break; 
+           case 0:return "Get Four Upgrades.";break; 
+            case 1:return "???";break; 
         }
-      }
+      },
+      style(){return{
+        "font-size":"13px"
+      }}
     }
   }
 })
@@ -180,5 +196,5 @@ function numToFarm(x){
   }
 }
 function extend(){
-  return getBuyableAmount("ex", 11)
+  return getBuyableAmount("ex", 11).toNumber()
 }
