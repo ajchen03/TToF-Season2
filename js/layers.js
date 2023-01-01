@@ -160,7 +160,7 @@ update(diff){
     for (item in player.p.grid){
 if(player.p.grid[item].time!=0){
   player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
-
+if(player.p.grid[item].plant==1&&player.p.grid[item].time<0){player.p.grid[item].time=30;player.p.grid[item].plant=2}
 }
 } 
 }
@@ -184,13 +184,16 @@ addLayer("ex",{
   tabformat:[
     "upgrades",
   ],
+    shouldNotify(){
+      return false
+    },
   buyables:{
     11:{
       display(){return "Unlock New Stuff.<br><br>Req: "+this.reqText() },
       canAfford(){
-       switch(extend()){
-         case 0:return player.p.upgrades.length>=4;break;
-           case 1:return false;break;
+        switch(extend()){
+          case 0:return player.p.upgrades.length>=4;break;
+          case 1:return false;break;
        }  
       },
       buy(){
@@ -198,8 +201,8 @@ addLayer("ex",{
       },
       reqText(){
         switch(extend()){
-           case 0:return "Get Four Upgrades.";break; 
-            case 1:return "???";break; 
+          case 0:return "Get Four Upgrades.";break; 
+          case 1:return "???";break; 
         }
       },
       style(){return{
