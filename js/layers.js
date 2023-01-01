@@ -121,7 +121,11 @@ addLayer("p",{
     },
     onClick(data, id) { 
        if(player.p.farmMode==1) player.p.grid[id].plant=0
-      else player.p.grid[id].plant=1
+      else {
+        player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)))
+       player.p.grid[id].plant=1
+        player.p.grid[id].time=30
+      }
     },
     getDisplay(data, id) {
         if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
@@ -154,7 +158,10 @@ addLayer("p",{
     },
 update(diff){
     for (item in player.p.grid){
-if(player.p.grid[item].time!=0)player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
+if(player.p.grid[item].time!=0){
+  player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
+
+}
 } 
 }
 })
