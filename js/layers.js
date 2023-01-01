@@ -51,12 +51,7 @@ addLayer("p",{
       12:{
          title:"Farm",
          description:"Unlock Farm.",
-         cost:n(3),//那可能真得写subTab
-        //问题是我不会写（绝望
-        //clickables
-        //我草 你别spam clickables 我求你了
-        //grid?
-        //你会写grid吗
+         cost:n(3),
         unlocked(){return hasUpgrade('p',11)}
       },
     },
@@ -66,7 +61,7 @@ addLayer("p",{
     }
   },
   grid: {
-    rows: 2, 
+    rows: 2, // If these are dynamic make sure to have a max value as well!
     cols: 2,
     getStartData(id) {
         return 0
@@ -83,10 +78,8 @@ addLayer("p",{
     getDisplay(data, id) {
         return data 
     },
-
-    etc
 },
-    tabformat:{
+    tabFormat:{
       "Main":{
         content:[
           "main-display",
@@ -100,10 +93,10 @@ addLayer("p",{
         unlocked(){return hasUpgrade('p',12)},
         content:[
           "main-display",
-          //"prestige-button",
+          "prestige-button",
           "resource-display",
           "blank",
-          "clickables"
+          "grid",
         ]
       },
     }
