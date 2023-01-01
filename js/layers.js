@@ -7,6 +7,8 @@ function getPointGen() {
   if(hasUpgrade('p',11))gain=gain.times(upgradeEffect('p',11))
   if(hasUpgrade('p',12))gain=gain.times(upgradeEffect('p',12))
   if(hasUpgrade('p',13))gain=gain.times(upgradeEffect('p',13))
+  gain=gain.times(n(1.2).pow(plantAmt2(3)))
+  gain=gain.times(n(1.5).pow(plantAmt2(4)))
 	return gain
 }
 
@@ -32,10 +34,9 @@ addLayer("p",{
     baseAmount(){return player.points},
     type: "normal", 
     exponent: 0.5, 
-    gainMult() {
-    //now we can use n(x) as new Decimal(x)
-    //see someUsefulFunctions.js for more
+    gainMult(){
         let mult = n(1)
+        mult=mult.times(n(1.1).pow(plantAmt2(2)))
         return mult
     },
     gainExp() { 
@@ -86,6 +87,12 @@ addLayer("p",{
           cost:n(15),
         unlocked(){return hasUpgrade('p',13)}
       },
+      21:{
+         title:"Growing potatos",
+         description:'Fasten potato growth.',
+          cost:n(30),
+        unlocked(){return extend()>=1}
+      },
     },
   clickables:{
     11:{
@@ -123,8 +130,9 @@ addLayer("p",{
        if(player.p.farmMode==1) player.p.grid[id].plant=0
       else {
         player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)))
-       player.p.grid[id].plant=1
-        player.p.grid[id].time=30
+        player.p.grid[id].plant=1
+        if (hasUpgrade('p',21)) player.p.grid[id].time=20
+        else player.p.grid[id].time=30
       }
     },
     getDisplay(data, id) {
@@ -160,10 +168,12 @@ addLayer("p",{
 update(diff){
     for (item in player.p.grid){
 
-  player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
+    player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
 
- if(player.p.grid[item].plant==1&&player.p.grid[item].time==0){player.p.grid[item].time=30;player.p.grid[item].plant=2}
-  if(player.p.grid[item].plant==2&&player.p.grid[item].time==0){
+    if(player.p.grid[item].plant==1&&player.p.grid[item].time==0){if (hasUpgrade('p',21)) player.p.grid[item].time=25
+                                                                  else player.p.grid[item].time=30
+                                                                  player.p.grid[item].plant=2}
+    if(player.p.grid[item].plant==2&&player.p.grid[item].time==0){
     let c=Math.random()
     if(c>0.9)player.p.grid[item].plant=4
     else player.p.grid[item].plant=3}
@@ -234,6 +244,13 @@ function plantAmt(){
   let a=0
   for (item in player.p.grid){
 if(player.p.grid[item].plant!=0)a++
+} 
+  return a
+}
+function plantAmt2(x){
+  let a=0
+  for (item in player.p.grid){
+if(player.p.grid[item].plant==x)a++
 } 
   return a
 }
