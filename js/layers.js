@@ -90,13 +90,14 @@ addLayer("p",{
   clickables:{
     11:{
       display(){return "Mode: "+this.text()},
-      onClick(){player.p.farmMode=(player.p.farmMode+1)%3},
+      onClick(){player.p.farmMode=(player.p.farmMode+1)%4},
       canClick:true,
       text(){
         switch(player.p.farmMode){
           case 0:return "Plant";break;
           case 1:return "Destroy";break;
           case 2:return "Watch";break;
+            case 3:return "Time";break;
         }
       }
     }
@@ -105,24 +106,27 @@ addLayer("p",{
     rows: 2, // If these are dynamic make sure to have a max value as well!
     cols: 2,
     getStartData(id) {
-        return 0
+        return {
+          plant:0,
+          time:30,
+        }
     },
     getUnlocked(id) { // Default
         return true
     },
     getCanClick(data, id) {
-        if(player.p.farmMode==0)return data==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
+        if(player.p.farmMode==0)return data.plant==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
       else if(player.p.farmMode==2)return false
-      else return data!=0
+      else return data.plant!=0
     },
     onClick(data, id) { 
-       if(player.p.farmMode==1) setGridData("p", id, 0)
-      else setGridData("p", id, 1)
+       if(player.p.farmMode==1) player.p.grid[id].plant=0
+      else player.p.grid[id].plant=1
     },
     getDisplay(data, id) {
         if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
-
-        return numToFarm(data)
+        else if(player.p.farmMode==0)
+        return numToFarm(data.plant)
     },
 },
     tabFormat:{
@@ -206,7 +210,7 @@ function extend(){
 function plantAmt(){
   let a=0
   for (item in player.p.grid){
-if(player.p.grid[item]!=0)a++
+if(player.p.grid[item].plant!=0)a++
 } 
   return a
 }
