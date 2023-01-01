@@ -35,9 +35,10 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-        let mult = n(1)
-        mult=mult.times(n(1.1).pow(plantAmt2(2)))
-        return mult
+      let mult = n(100)
+      mult=mult.times(n(1.1).pow(plantAmt2(2)))
+      
+      return mult
     },
     gainExp() { 
         let mult = n(1)
