@@ -5,6 +5,8 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
   if(hasUpgrade('p',11))gain=gain.times(upgradeEffect('p',11))
+  if(hasUpgrade('p',12))gain=gain.times(upgradeEffect('p',12))
+  if(hasUpgrade('p',13))gain=gain.times(upgradeEffect('p',13))
 	return gain
 }
 
@@ -17,11 +19,14 @@ addLayer("p",{
 		points: n(0),
     }},
     color() {
-      if (hasUpgrade('p',11)) return "#ffdb83";
+      if (hasUpgrade('p',14)) return "#ffdb83";
       return "#4BDC13";
     },
     requires: n(10), 
-    resource: "potatos", 
+    resource() {
+      if (hasUpgrade('p',14)) return "potatos";
+      return "prestige points";
+    },
     baseResource: "points",
     baseAmount(){return player.points},
     type: "normal", 
@@ -38,24 +43,46 @@ addLayer("p",{
     },
     row: 0,
     hotkeys: [
-        {key: "p", description: "P: Reset for potatoes", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "p", description: `P: Reset for potatos`, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
     upgrades:{
       11:{
          title:"Basic Upgrade",
-         description:"Potatoes boost Points gain.",
+         description() {
+      return `${layers.p.resource()} boost Points gain.`
+    },
          cost:n(1),
          effect(){
-           return player.p.points.add(3).log(2)
+           return player.p.points.add(3).max(1).log(2)
          },
-        effectDisplay(){return format(upgradeEffect('p',11))+"x"}
+        effectDisplay(){return format(upgradeEffect('p',11))+"x"},
       },
       12:{
-         title:"Farm",
-         description:"Unlock Farm.",
+         title:"Basic Upgrade 2",
+         description:"Points boost themselves.",
          cost:n(3),
-        unlocked(){return false /**/}
+        effect(){
+           return player.points.add(2).max(1).log(10).add(1)
+         },
+        effectDisplay(){return format(upgradeEffect('p',12))+"x"},
+        unlocked(){return hasUpgrade('p',11)}
+      },
+      13:{
+         title:"Basic Upgrade 3",
+         description(){return `Boost Points gain based on ${layers.p.resource()} Upgrades.`},
+          effect(){
+           return n(1.3**player.p.upgrades.length)
+         },
+          cost:n(6),
+        effectDisplay(){return format(upgradeEffect('p',13))+"x"},
+        unlocked(){return hasUpgrade('p',12)}
+      },
+      14:{
+         title:"Wait, the themes was about potatos!",
+         description:`okey lemme fix that`,
+          cost:n(15),
+        unlocked(){return hasUpgrade('p',13)}
       },
     },
   clickables:{
@@ -93,7 +120,7 @@ addLayer("p",{
         ]
       },
       "Farm":{
-        unlocked(){return hasUpgrade('p',12)},
+        unlocked(){return extend()>1},
         content:[
           "main-display",
           "prestige-button",
@@ -129,7 +156,8 @@ addLayer("ex",{
       display(){return "Unlock New Stuff." },
       canAfford(){
        switch(extend()){
-         case 1:return player.p.upgrades.length>=1;break;
+         case 1:return player.p.upgrades.length>=4;break;
+           case 2:return false;break;
        }  
       },
       buy(){
@@ -137,7 +165,8 @@ addLayer("ex",{
       },
       reqText(){
         switch(extend()){
-           case 1:return "Ge";break; 
+           case 1:return "Get Four Upgrades.";break; 
+            case 2:return "???";break; 
         }
       }
     }
