@@ -95,7 +95,7 @@ addLayer("p",{
       text(){
         switch(player.p.farmMode){
           case 0:return "Plant";break;
-          case 1:return "View+Destroy";break;
+          case 1:return "Destroy";break;
           //case 2:return "Watch";break;
           //case 3:return "Time";break;
         }
@@ -128,8 +128,9 @@ addLayer("p",{
       }
     },
     getDisplay(data, id) {
-        if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
-        return numToFarm(data.plant)+'\n'+format(player.p.grid[id].time)+"s"
+        if(player.p.farmMode==0){if (player.p.grid[id].plant!=0) return `${numToFarm(data.plant)}\n${format(player.p.grid[id].time)}s`
+          return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`}
+        return `${numToFarm(data.plant)}\n${format(player.p.grid[id].time)}s`
         //return numToFarm(data.plant)
     },
 },
@@ -162,7 +163,10 @@ update(diff){
   player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
 
  if(player.p.grid[item].plant==1&&player.p.grid[item].time==0){player.p.grid[item].time=30;player.p.grid[item].plant=2}
-  
+  if(player.p.grid[item].plant==2&&player.p.grid[item].time==0){
+    let c=Math.random()
+    if(c>0.9)player.p.grid[item].plant=4
+    else player.p.grid[item].plant=3}
 
 } 
 }
@@ -220,6 +224,7 @@ function numToFarm(x){
     case 1:return "Baby Potato";break;
     case 2:return "Teen Potato";break;
     case 3:return "Normal Potato";break; 
+    case 4:return "Giant Potato"
   }
 }
 function extend(){
