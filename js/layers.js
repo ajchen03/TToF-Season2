@@ -108,7 +108,7 @@ addLayer("p",{
     getStartData(id) {
         return {
           plant:0,
-          time:30,
+          time:0,
         }
     },
     getUnlocked(id) { // Default
@@ -116,8 +116,8 @@ addLayer("p",{
     },
     getCanClick(data, id) {
         if(player.p.farmMode==0)return data.plant==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
-      else if(player.p.farmMode==2)return false
-      else return data.plant!=0
+      else if(player.p.farmMode==1)return data.plant!=0
+      else return false
     },
     onClick(data, id) { 
        if(player.p.farmMode==1) player.p.grid[id].plant=0
@@ -125,7 +125,7 @@ addLayer("p",{
     },
     getDisplay(data, id) {
         if(player.p.farmMode==0)return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`
-        else if(player.p.farmMode==0)
+        else if(player.p.farmMode==3)return format(player.p.grid[id].time)+"s"
         return numToFarm(data.plant)
     },
 },
@@ -152,7 +152,11 @@ addLayer("p",{
         ]
       },
     },
-
+update(diff){
+    for (item in player.p.grid){
+if(player.p.grid[item].time!=0)player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
+} 
+}
 })
 addLayer("ex",{
     symbol: "Ex", 
