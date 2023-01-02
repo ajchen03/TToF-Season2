@@ -28,7 +28,7 @@ function extend(){
 function plantAmt(){
   let a=0
   for (item in player.p.grid){
-if(player.p.grid[item]!=0)a++
+if(getGridData("p", item)!=0)a++
 } 
   return a
 }
@@ -56,7 +56,7 @@ addLayer("p",{
     },
     requires: n(10), 
     resource() {
-      if (hasUpgrade('p',14)) return "potatos";
+      if (hasUpgrade('p',14)) return "potatoes";
       return "prestige points";
     },
     baseResource: "points",
@@ -79,6 +79,39 @@ addLayer("p",{
         {key: "p", description: `P: Reset for potatos`, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
+  grid: {
+    rows:9,
+    cols:9,
+    getStartData(id) {
+        return 0
+    },
+    getCanClick(data, id) {
+        if(player.p.farmMode==0)return data==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
+      else if(player.p.farmMode==1)return data!=0
+      else return false
+    },
+    onClick(data, id) { 
+       if(player.p.farmMode==1) setGridData("p", id, 0)
+      else {
+        player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
+        setGridData("p", id, 1)
+        if (hasUpgrade('p',21)) Vue.set(player.p.time,id,20)             
+        else Vue.set(player.p.time,id,30)
+      }
+    },
+    getDisplay(data, id) {
+        if(player.p.farmMode==0){if (player.p.grid[id]!=0) return `${numToFarm(data)}\n${format(player.p.time[id])}s`
+          return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`}
+        return `${numToFarm(data)}\n${format(player.p.time[id])}s`
+        //return numToFarm(data.plant)
+    },
+    getUnlocked(id){
+      let r=hasUpgrade("p",23)?3:2
+      let c=hasUpgrade("p",23)?3:2
+      
+      return (id%100<=c)&&(Math.floor(id/100)<=r)
+    }
+},
     upgrades:{
       11:{
          title:"Basic Upgrade",
@@ -143,7 +176,11 @@ addLayer("p",{
          description:'Potato gain is doubled (Req 7 potato in the farm)',
           cost:n(200),
         unlocked(){return hasUpgrade('p',22)},
-        canAfford(){return (plantAmt()>=7)}
+        canAfford(){
+          let x=plantAmt()>=7
+          return x
+          
+        }
       },
     },
   clickables:{
@@ -161,36 +198,7 @@ addLayer("p",{
       }
     }
   },
-  grid: {
-    rows(){return hasUpgrade("p",23)?3:2},
-    cols(){return hasUpgrade("p",23)?3:2},
-    getStartData(id) {
-        return 0
-    },
-    getUnlocked(id) { // Default
-        return true
-    },
-    getCanClick(data, id) {
-        if(player.p.farmMode==0)return data==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
-      else if(player.p.farmMode==1)return data!=0
-      else return false
-    },
-    onClick(data, id) { 
-       if(player.p.farmMode==1) setGridData("p", id, 0)
-      else {
-        player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
-        setGridData("p", id, 1)
-        if (hasUpgrade('p',21)) Vue.set(player.p.time,id,20)             
-        else Vue.set(player.p.time,id,30)
-      }
-    },
-    getDisplay(data, id) {
-        if(player.p.farmMode==0){if (player.p.grid[id]!=0) return `${numToFarm(data)}\n${format(player.p.time[id])}s`
-          return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`}
-        return `${numToFarm(data)}\n${format(player.p.time[id])}s`
-        //return numToFarm(data.plant)
-    },
-},
+  
     tabFormat:{
       "Main":{
         content:[
@@ -278,11 +286,14 @@ addLayer("ex",{
     11:{
       display(){return "Unlock New Stuff.<br><br>Req: "+this.reqText() },
       canAfford(){
-        switch(extend()){
+        if(extend()==0)return player.p.upgrades.length>=4;
+        else if(extend()==1)return player.p.upgrades.length>=8;
+        else return false
+        /*switch(extend()){
           case 0:return player.p.upgrades.length>=4;break;
           case 1:return plantAmt()>=9&&plantAmt2(4)>=6;break;
           case 2:return false;break;
-       }  
+       }*/
       },
       buy(){
         addBuyables("ex", 11, n(1))
@@ -290,7 +301,7 @@ addLayer("ex",{
       reqText(){
         switch(extend()){
           case 0:return "Get Four Upgrades.";break; 
-          case 1:return "9 potato AND 6 giant potato";break; 
+          case 1:return "8 Potatoes Upgrades!";break; 
           case 2:return "This is the endgame!";break; 
         }
       },
