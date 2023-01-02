@@ -64,9 +64,10 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-      let mult = n(1.3); 
-      mult=mult.times(tmp.p.s);
-      //console.log(mult);
+      let mult = n(1); 
+     
+     
+
       return mult;
     },
     gainExp() { 
@@ -122,7 +123,13 @@ addLayer("p",{
          description:'Fasten potato growth.',
           cost:n(30),
         unlocked(){return extend()>=1}
-      }
+      },   
+      22:{
+         title:"More Mutation",
+         description:'A higher chance to get giant potato instead! (Req 3 normal or giant potato)',
+          cost:n(30),
+        unlocked(){return hasU}
+      },
     },
   clickables:{
     11:{
@@ -156,14 +163,14 @@ addLayer("p",{
     onClick(data, id) { 
        if(player.p.farmMode==1) setGridData("p", id, 0)
       else {
-        player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)))
+        player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
         setGridData("p", id, 1)
-        if (hasUpgrade('p',21)) player.p.time[id]=20
-        else player.p.time[id]=30
+        if (hasUpgrade('p',21)) Vue.set(player.p.time,id,20)             
+        else Vue.set(player.p.time,id,30)
       }
     },
     getDisplay(data, id) {
-        if(player.p.farmMode==0){if (player.p.grid[id].plant!=0) return `${numToFarm(data)}\n${format(player.p.time[id])}s`
+        if(player.p.farmMode==0){if (player.p.grid[id]!=0) return `${numToFarm(data)}\n${format(player.p.time[id])}s`
           return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`}
         return `${numToFarm(data)}\n${format(player.p.time[id])}s`
         //return numToFarm(data.plant)
@@ -196,17 +203,18 @@ update(diff){
     for (item in player.p.grid){
  
   if(player.p.time[item]==undefined)player.p.time[item]=0
-    player.p.time[item]=Math.max(player.p.time[item]-diff,0)
+    Vue.set(player.p.time,item,Math.max(player.p.time[item]-diff,0))
 
     if(player.p.grid[item]==1&&player.p.time[item]==0){
-      if (hasUpgrade('p',21)) player.p.time[item]=25;                                                                       
-      else player.p.time[item]=30;                                                          
-      setGridData("p", item,2)
+      if (hasUpgrade('p',21)) Vue.set(player.p.time,item,25)                                                                     
+      else Vue.set(player.p.time,item,30)                                                      
+      setGridData("p", item, 2)
     }
     if(player.p.grid[item]==2&&player.p.time[item]==0){
     let c=Math.random()
-    if(c>0.9)player.p.grid[item]=4
-    else player.p.grid[item]=3}
+    if(c>0.9)setGridData("p", item, 4)
+    else setGridData("p", item, 3)
+    }
 
 } 
 },
