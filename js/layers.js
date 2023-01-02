@@ -65,7 +65,7 @@ addLayer("p",{
     exponent: 0.5, 
     gainMult(){
       let mult = n(1); 
-     
+     if(hasUpgrade('p',24))mult=mult.times(2)
      
 
       return mult;
@@ -137,6 +137,13 @@ addLayer("p",{
           cost:n(70),
         unlocked(){return hasUpgrade('p',22)},
         canAfford(){return (plantAmt2(4))>=2}
+      },
+      24:{
+         title:"Potato Boost",
+         description:'Potato gain is doubled (Req 7 potato in the farm)',
+          cost:n(200),
+        unlocked(){return hasUpgrade('p',22)},
+        canAfford(){return (plantAmt()>=7)}
       },
     },
   clickables:{
@@ -272,7 +279,8 @@ addLayer("ex",{
       canAfford(){
         switch(extend()){
           case 0:return player.p.upgrades.length>=4;break;
-          case 1:return false;break;
+          case 1:return plantAmt()>=9&&plantAmt2(4)>=6;break;
+          case 2:return false;break;
        }  
       },
       buy(){
@@ -281,7 +289,8 @@ addLayer("ex",{
       reqText(){
         switch(extend()){
           case 0:return "Get Four Upgrades.";break; 
-          case 1:return "???";break; 
+          case 1:return "9 potato AND 6 giant potato";break; 
+          case 2:return "This is the endgame!";break; 
         }
       },
       style(){return{
