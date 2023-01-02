@@ -230,6 +230,7 @@ addLayer("p",{
       },
     },
 update(diff){
+
     for (item in player.p.grid){
  
   if(player.p.time[item]==undefined)player.p.time[item]=0
