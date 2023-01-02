@@ -7,7 +7,7 @@ function getPointGen() {
   if(hasUpgrade('p',11))gain=gain.times(upgradeEffect('p',11))
   if(hasUpgrade('p',12))gain=gain.times(upgradeEffect('p',12))
   if(hasUpgrade('p',13))gain=gain.times(upgradeEffect('p',13))
-  gain=gain.times(n(1.1).pow(plantAmt2(2)))
+
   gain=gain.times(n(1.2).pow(plantAmt2(3)))
   gain=gain.times(n(1.5).pow(plantAmt2(4)))
 	return gain
@@ -27,14 +27,14 @@ function extend(){
 }
 function plantAmt(){
   let a=0
-  for (item in player.p.grid){
+  for (let item in player.p.grid){
 if(getGridData("p", item)!=0)a++
 } 
   return n(a)
 }
 function plantAmt2(x){
   let a=0
-  for (item in player.p.grid){
+  for (let item in player.p.grid){
 if(getGridData("p", item)==x)a++
 } 
   
@@ -66,7 +66,7 @@ addLayer("p",{
     gainMult(){
       let mult = n(1); 
      if(hasUpgrade('p',24))mult=mult.times(2)
-     
+     mult=mult.times(n(1.05).pow(plantAmt2(2)))
 
       return mult;
     },
@@ -162,8 +162,7 @@ addLayer("p",{
          description:'A higher chance to get giant potato instead! (Req 3 normal or giant potato)',
           cost:n(50),
         unlocked(){return hasUpgrade('p',21)},
-        canAfford(){console.log((plantAmt2(3).add(plantAmt2(4))).gte(3))
-          return (plantAmt2(3).add(plantAmt2(4))).gte(3)},
+        canAfford(){return (plantAmt2(3).add(plantAmt2(4))).gte(3)},
       },
       23:{
          title:"Area+",
@@ -176,11 +175,9 @@ addLayer("p",{
          title:"Potato Boost",
          description:'Potato gain is doubled (Req 7 potato in the farm)',
           cost:n(200),
-        unlocked(){return hasUpgrade('p',22)},
+        unlocked(){return hasUpgrade('p',23)},
         canAfford(){
-          let x=plantAmt().gte(7)
-          return x
-          
+          return plantAmt().gte(7)        
         }
       },
     },
@@ -287,14 +284,11 @@ addLayer("ex",{
     11:{
       display(){return "Unlock New Stuff.<br><br>Req: "+this.reqText() },
       canAfford(){
-        if(extend()==0)return player.p.upgrades.length>=4;
-        else if(extend()==1)return player.p.upgrades.length>=8;
-        else return false
-        /*switch(extend()){
+        switch(extend()){
           case 0:return player.p.upgrades.length>=4;break;
           case 1:return plantAmt()>=9&&plantAmt2(4)>=6;break;
           case 2:return false;break;
-       }*/
+       }
       },
       buy(){
         addBuyables("ex", 11, n(1))
@@ -302,7 +296,7 @@ addLayer("ex",{
       reqText(){
         switch(extend()){
           case 0:return "Get Four Upgrades.";break; 
-          case 1:return "8 Potatoes Upgrades!";break; 
+          case 1:return "9 Potatoes planted and 6 giant potato";break; 
           case 2:return "This is the endgame!";break; 
         }
       },
