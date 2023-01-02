@@ -243,7 +243,7 @@ update(diff){
     Vue.set(player.p.time,item,Math.max(player.p.time[item]-diff,0))
 
     if(player.p.grid[item]==1&&player.p.time[item]==0){
-      if (hasUpgrade('p',21)) Vue.set(player.p.time,item,25)                                                                     
+      if (hasUpgrade('p',21)) Vue.set(player.p.time,item,30)                                                                     
       else Vue.set(player.p.time,item,30)                                                      
       setGridData("p", item, 2)
     }
