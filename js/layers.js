@@ -162,7 +162,8 @@ addLayer("p",{
          description:'A higher chance to get giant potato instead! (Req 3 normal or giant potato)',
           cost:n(50),
         unlocked(){return hasUpgrade('p',21)},
-        canAfford(){return ((plantAmt2(3).add(plantAmt2(4))).gte(3))}
+        canAfford(){console.log((plantAmt2(3).add(plantAmt2(4))).gte(3))
+          return (plantAmt2(3).add(plantAmt2(4))).gte(3)},
       },
       23:{
          title:"Area+",
