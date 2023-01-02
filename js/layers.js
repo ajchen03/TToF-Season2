@@ -155,14 +155,8 @@ addLayer("p",{
     }
   },
   grid: {
-    rows(){
-      let r=2
-      if(hasUpgrade('p',23))r++
-      return r
-    },
-    cols(){
-      return 2
-    },
+    rows(){return hasUpgrade("p",23)?3:2},
+    cols(){return hasUpgrade("p",23)?3:2},
     getStartData(id) {
         return 0
     },
