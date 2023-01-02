@@ -30,15 +30,15 @@ function plantAmt(){
   for (item in player.p.grid){
 if(getGridData("p", item)!=0)a++
 } 
-  return a
+  return n(a)
 }
 function plantAmt2(x){
   let a=0
   for (item in player.p.grid){
-if(player.p.grid[item]==x)a++
+if(getGridData("p", item)==x)a++
 } 
   
-  return a
+  return n(a)
 }
 
 addLayer("p",{
@@ -47,7 +47,7 @@ addLayer("p",{
     startData() { return {
         unlocked: true,
 		points: n(0),
-      farmMode:2,
+      farmMode:0,
       time:{},
     }},
     color() {
@@ -162,14 +162,14 @@ addLayer("p",{
          description:'A higher chance to get giant potato instead! (Req 3 normal or giant potato)',
           cost:n(50),
         unlocked(){return hasUpgrade('p',21)},
-        canAfford(){return (plantAmt2(3)+plantAmt2(4))>=3}
+        canAfford(){return ((plantAmt2(3).add(plantAmt2(4))).gte(3))}
       },
       23:{
          title:"Area+",
          description:'Get a new row and column for farm. (Req 2 giant potato)',
           cost:n(70),
         unlocked(){return hasUpgrade('p',22)},
-        canAfford(){return (plantAmt2(4))>=2}
+        canAfford(){return (plantAmt2(4)).gte(2)}
       },
       24:{
          title:"Potato Boost",
@@ -177,7 +177,7 @@ addLayer("p",{
           cost:n(200),
         unlocked(){return hasUpgrade('p',22)},
         canAfford(){
-          let x=plantAmt()>=7
+          let x=plantAmt().gte(7)
           return x
           
         }
