@@ -162,8 +162,8 @@ addLayer("p",{
     }
   },
   grid: {
-    rows(){return hasUpgrade("p",23)?3:2},
-    cols(){return hasUpgrade("p",23)?3:2},
+    rows:2,
+    cols: 2,
     getStartData(id) {
         return 0
     },
