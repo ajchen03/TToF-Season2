@@ -7,11 +7,39 @@ function getPointGen() {
   if(hasUpgrade('p',11))gain=gain.times(upgradeEffect('p',11))
   if(hasUpgrade('p',12))gain=gain.times(upgradeEffect('p',12))
   if(hasUpgrade('p',13))gain=gain.times(upgradeEffect('p',13))
+  gain=gain.times(n(1.1).pow(plantAmt2(2)))
   gain=gain.times(n(1.2).pow(plantAmt2(3)))
   gain=gain.times(n(1.5).pow(plantAmt2(4)))
 	return gain
 }
 
+function numToFarm(x){
+  switch(x){
+    case 0:return "Empty";break;
+    case 1:return "Baby Potato";break;
+    case 2:return "Teen Potato";break;
+    case 3:return "Normal Potato";break; 
+    case 4:return "Giant Potato"
+  }
+}
+function extend(){
+  return getBuyableAmount("ex", 11).toNumber()
+}
+function plantAmt(){
+  let a=0
+  for (item in player.p.grid){
+if(player.p.grid[item].plant!=0)a++
+} 
+  return a
+}
+function plantAmt2(x){
+  let a=0
+  for (item in player.p.grid){
+if(player.p.grid[item].plant==x)a++
+} 
+  
+  return a
+}
 
 addLayer("p",{
     symbol: "P",
@@ -35,11 +63,10 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-      let mult = n(1) 
-      alert(tmp.p.plantAmt2)
-      mult=mult.times(n(1.1).pow(tmp.p.plantAmt2))
-    
-      return mult
+      let mult = n(1); 
+      mult=mult.times(n(1.1).pow(plantAmt2(2)));
+      //console.log(mult);
+      return mult;
     },
     gainExp() { 
         let mult = n(1)
@@ -182,14 +209,7 @@ update(diff){
 
 } 
 },
-  plantAmt2(){
-  let a=0
-  for (item in player.p.grid){
-if(player.p.grid[item].plant==2)a++
-  } 
-    
-  return n(0)
-}
+
   
 })
 addLayer("ex",{
@@ -240,30 +260,3 @@ addLayer("ex",{
   
 })
 
-function numToFarm(x){
-  switch(x){
-    case 0:return "Empty";break;
-    case 1:return "Baby Potato";break;
-    case 2:return "Teen Potato";break;
-    case 3:return "Normal Potato";break; 
-    case 4:return "Giant Potato"
-  }
-}
-function extend(){
-  return getBuyableAmount("ex", 11).toNumber()
-}
-function plantAmt(){
-  let a=0
-  for (item in player.p.grid){
-if(player.p.grid[item].plant!=0)a++
-} 
-  return a
-}
-function plantAmt2(x){
-  let a=0
-  for (item in player.p.grid){
-if(player.p.grid[item].plant==x)a++
-} 
-  
-  return a
-}
