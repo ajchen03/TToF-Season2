@@ -28,14 +28,14 @@ function extend(){
 function plantAmt(){
   let a=0
   for (item in player.p.grid){
-if(player.p.grid[item].plant!=0)a++
+if(player.p.grid[item]!=0)a++
 } 
   return a
 }
 function plantAmt2(x){
   let a=0
   for (item in player.p.grid){
-if(player.p.grid[item].plant==x)a++
+if(player.p.grid[item]==x)a++
 } 
   
   return a
@@ -48,6 +48,7 @@ addLayer("p",{
         unlocked: true,
 		points: n(0),
       farmMode:2,
+      time:{},
     }},
     color() {
       if (hasUpgrade('p',14)) return "#ffdb83";
@@ -63,8 +64,8 @@ addLayer("p",{
     type: "normal", 
     exponent: 0.5, 
     gainMult(){
-      let mult = n(1); 
-      mult=mult.times(n(1.1).pow(plantAmt2(2)));
+      let mult = n(1.3); 
+      mult=mult.times(tmp.p.s);
       //console.log(mult);
       return mult;
     },
@@ -142,32 +143,29 @@ addLayer("p",{
     rows: 2, // If these are dynamic make sure to have a max value as well!
     cols: 2,
     getStartData(id) {
-        return {
-          plant:0,
-          time:0,
-        }
+        return 0
     },
     getUnlocked(id) { // Default
         return true
     },
     getCanClick(data, id) {
-        if(player.p.farmMode==0)return data.plant==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
-      else if(player.p.farmMode==1)return data.plant!=0
+        if(player.p.farmMode==0)return data==0&&player.p.points.gte(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())
+      else if(player.p.farmMode==1)return data!=0
       else return false
     },
     onClick(data, id) { 
-       if(player.p.farmMode==1) player.p.grid[id].plant=0
+       if(player.p.farmMode==1) setGridData("p", id, 0)
       else {
         player.p.points=player.p.points.sub(n(8).times(n(1.5).pow(plantAmt()**1.1)))
-        player.p.grid[id].plant=1
-        if (hasUpgrade('p',21)) player.p.grid[id].time=20
-        else player.p.grid[id].time=30
+        setGridData("p", id, 1)
+        if (hasUpgrade('p',21)) player.p.time[id]=20
+        else player.p.time[id]=30
       }
     },
     getDisplay(data, id) {
-        if(player.p.farmMode==0){if (player.p.grid[id].plant!=0) return `${numToFarm(data.plant)}\n${format(player.p.grid[id].time)}s`
+        if(player.p.farmMode==0){if (player.p.grid[id].plant!=0) return `${numToFarm(data)}\n${format(player.p.time[id])}s`
           return `Req ${formatWhole(n(8).times(n(1.5).pow(plantAmt()**1.1)).round())} potatoes.`}
-        return `${numToFarm(data.plant)}\n${format(player.p.grid[id].time)}s`
+        return `${numToFarm(data)}\n${format(player.p.time[id])}s`
         //return numToFarm(data.plant)
     },
 },
@@ -196,20 +194,23 @@ addLayer("p",{
     },
 update(diff){
     for (item in player.p.grid){
+ 
+  if(player.p.time[item]==undefined)player.p.time[item]=0
+    player.p.time[item]=Math.max(player.p.time[item]-diff,0)
 
-    player.p.grid[item].time=Math.max(player.p.grid[item].time-diff,0)
-
-    if(player.p.grid[item].plant==1&&player.p.grid[item].time==0){if (hasUpgrade('p',21)) player.p.grid[item].time=25
-                                                                  else player.p.grid[item].time=30
-                                                                  player.p.grid[item].plant=2}
-    if(player.p.grid[item].plant==2&&player.p.grid[item].time==0){
+    if(player.p.grid[item]==1&&player.p.time[item]==0){
+      if (hasUpgrade('p',21)) player.p.time[item]=25;                                                                       
+      else player.p.time[item]=30;                                                          
+      setGridData("p", item,2)
+    }
+    if(player.p.grid[item]==2&&player.p.time[item]==0){
     let c=Math.random()
-    if(c>0.9)player.p.grid[item].plant=4
-    else player.p.grid[item].plant=3}
+    if(c>0.9)player.p.grid[item]=4
+    else player.p.grid[item]=3}
 
 } 
 },
-
+s(){return n(1.1).pow(plantAmt2(2))} 
   
 })
 addLayer("ex",{
