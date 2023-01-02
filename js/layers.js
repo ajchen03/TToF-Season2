@@ -127,8 +127,16 @@ addLayer("p",{
       22:{
          title:"More Mutation",
          description:'A higher chance to get giant potato instead! (Req 3 normal or giant potato)',
-          cost:n(30),
-        unlocked(){return hasU}
+          cost:n(50),
+        unlocked(){return hasUpgrade('p',21)},
+        canAfford(){return (plantAmt2(3)+plantAmt2(4))>=3}
+      },
+      23:{
+         title:"Area+",
+         description:'Get a new row and column for farm. (Req 2 giant potato)',
+          cost:n(70),
+        unlocked(){return hasUpgrade('p',22)},
+        canAfford(){return (plantAmt2(4))>=2}
       },
     },
   clickables:{
@@ -138,7 +146,7 @@ addLayer("p",{
       canClick:true,
       text(){
         switch(player.p.farmMode){
-          case 0:return "Plant";break;
+          case 0:return "Seed";break;
           case 1:return "Destroy";break;
           //case 2:return "Watch";break;
           //case 3:return "Time";break;
@@ -147,8 +155,14 @@ addLayer("p",{
     }
   },
   grid: {
-    rows: 2, // If these are dynamic make sure to have a max value as well!
-    cols: 2,
+    rows(){
+      let r=2
+      if(hasUpgrade('p',23))r++
+      return r
+    },
+    cols(){
+      return 2
+    },
     getStartData(id) {
         return 0
     },
@@ -198,6 +212,21 @@ addLayer("p",{
           "clickables",
         ]
       },
+       "Farm Effect":{
+        unlocked(){return extend()>=1},
+        content:[
+          "main-display",
+          "prestige-button",
+          "resource-display",
+          "blank",
+          ["display-text",()=>`
+          Bady Potato (No effect)<br>
+          Teen Potato (1.1x point gain)<br>
+          Normal Potato (1.2x point gain)<br>
+          Giant Potato (1.5x point gain)<br>
+          `]
+        ]
+      },
     },
 update(diff){
     for (item in player.p.grid){
@@ -212,7 +241,7 @@ update(diff){
     }
     if(player.p.grid[item]==2&&player.p.time[item]==0){
     let c=Math.random()
-    if(c>0.9)setGridData("p", item, 4)
+    if(c>(hasUpgrade('p',22)?0.7:0.9))setGridData("p", item, 4)
     else setGridData("p", item, 3)
     }
 
