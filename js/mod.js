@@ -13,14 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.1 potato",
+	num: "0.0.2 more potato",
 	name: "Literally only one potato",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0.1</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v0.0</h3><br>
+		- We dont use it lol
+    `
+
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -39,6 +40,7 @@ function canGenPoints(){
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	has14:false
 }}
 
 // Display extra things at the top of the page
